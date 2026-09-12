@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca de Historias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F8F8FA;--white:#FFFFFF;--surface2:#F4F4F6;--border:#E8E8EC;
+  --text:#111118;--text2:#72728A;
+  --accent:#2563EB;--accent-bg:#EFF6FF;--accent-border:#BFDBFE;
+  --nutrir:#1A8A52;--nutrir-bg:#E2F5EC;--nutrir-light:#F0FDF6;--nutrir-border:#A8DDBF;
+  --ventas:#D4652A;--ventas-bg:#FDF0E8;--ventas-light:#FFF7F2;--ventas-border:#F0C4A8;
+  --w1:#6C5CE7;--w1-bg:#EEF0FF;--w1-light:#F5F4FF;--w1-border:#C4C0F0;
+  --w2:#00A878;--w2-bg:#E0FAF4;--w2-light:#F0FDF9;--w2-border:#A0DFCC;
+  --w3:#E17055;--w3-bg:#FEF0EB;--w3-light:#FFF7F5;--w3-border:#F0C4B4;
+  --w4:#0984E3;--w4-bg:#E3F2FD;--w4-light:#F0F8FF;--w4-border:#A8D4F5;
+  --radius:12px;--font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:12px}
+.login-box{background:var(--white);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-align:center}
+.login-emoji{font-size:38px;margin-bottom:14px}
+.login-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2}
+.login-title-accent{color:var(--accent);font-style:italic;display:block}
+.login-sub{font-size:14px;color:var(--text2);margin:10px 0 20px;line-height:1.6}
+.login-box input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);margin-bottom:10px;outline:none;transition:border-color .2s;color:var(--text)}
+.login-box input:focus{border-color:var(--accent)}
+.btn-login{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity .2s}
+.btn-login:hover{opacity:.88}
+#login-error{color:#c0392b;font-size:13px;margin-top:8px;display:none}
+.login-footer{font-size:12px;color:var(--text2);font-style:italic}
+
+/* APP */
+#app-screen{display:none;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
+.topbar-title{font-size:15px;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+#user-email-display{font-size:13px;color:var(--text2)}
+.btn-logout{font-size:13px;color:var(--text2);background:none;border:none;cursor:pointer;font-family:var(--font);padding:4px 0}
+.btn-logout:hover{color:var(--text)}
+
+.tabs{display:flex;padding:0 2rem;background:var(--white);border-bottom:1px solid var(--border)}
+.tab-btn{padding:14px 20px;font-size:14px;font-weight:500;color:var(--text2);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;font-family:var(--font);transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+.main{max-width:860px;margin:0 auto;padding:2rem}
+.section{display:none}
+.section.active{display:block}
+
+/* SETUP CARD */
+.setup-card{background:var(--white);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.5rem;border:1px solid var(--border)}
+.setup-card h2{font-size:20px;font-weight:700;margin-bottom:4px}
+.setup-card>p{font-size:14px;color:var(--text2);margin-bottom:1.5rem;line-height:1.5}
+.config-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:10px}
+
+/* Slider */
+.slider-wrap{position:relative;margin-bottom:1.5rem}
+.slider-row{display:flex;align-items:center;gap:14px}
+.slider-track{flex:1}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(to right,var(--accent) 0%,var(--accent) 25%,var(--border) 25%,var(--border) 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 4px rgba(37,99,235,.35)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:none}
+.slider-val{font-size:14px;font-weight:600;color:var(--accent);white-space:nowrap;min-width:110px;text-align:right}
+
+/* Distribución */
+.dist-row{display:flex;gap:12px;margin-bottom:1.5rem}
+.dist-box{flex:1;background:var(--bg);border-radius:8px;padding:12px 14px;border:1px solid var(--border)}
+.dist-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.dist-num{font-size:22px;font-weight:700}
+.dist-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.dist-ventas .dist-num{color:var(--ventas)}
+.dist-nutrir .dist-num{color:var(--nutrir)}
+
+.btn-gen{padding:12px 28px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity .2s}
+.btn-gen:hover{opacity:.88}
+
+/* CAL HEADER */
+.cal-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:10px}
+.cal-toprow-left h3{font-size:18px;font-weight:700}
+.cal-toprow-left p{font-size:13px;color:var(--text2);margin-top:2px}
+.cal-toprow-right{display:flex;gap:8px;flex-wrap:wrap}
+.btn-pdf{padding:8px 16px;background:var(--accent);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity .2s}
+.btn-pdf:hover{opacity:.88}
+.btn-nuevo{padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;font-weight:500;color:var(--text);font-family:var(--font);cursor:pointer;transition:all .15s}
+.btn-nuevo:hover{border-color:var(--accent);color:var(--accent)}
+
+.legend{display:flex;gap:16px;margin-bottom:1.25rem}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2)}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+
+/* WEEK */
+.week-block{margin-bottom:1.25rem;border-radius:var(--radius);overflow:hidden;border:1.5px solid}
+.week-block.wk1{border-color:var(--w1-border)}.week-block.wk2{border-color:var(--w2-border)}
+.week-block.wk3{border-color:var(--w3-border)}.week-block.wk4{border-color:var(--w4-border)}
+.week-head{padding:10px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:white}
+.wk1 .week-head{background:var(--w1)}.wk2 .week-head{background:var(--w2)}
+.wk3 .week-head{background:var(--w3)}.wk4 .week-head{background:var(--w4)}
+
+/* FORMAT ROW */
+.fmt-row{border-bottom:1px solid var(--border);background:var(--white)}
+.fmt-row:last-child{border-bottom:none}
+.fmt-row-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;gap:12px;transition:background .15s}
+.fmt-row-header:hover{background:var(--surface2)}
+.fmt-row.open>.fmt-row-header{background:inherit}
+.fmt-row-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.fmt-day{font-size:12px;color:var(--text2);font-weight:600;min-width:34px}
+.fmt-name{font-size:14px;font-weight:600;color:var(--text)}
+.fmt-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0}
+.tag-ventas{background:var(--ventas-bg);color:var(--ventas)}
+.tag-nutrir{background:var(--nutrir-bg);color:var(--nutrir)}
+.fmt-chev{font-size:13px;color:var(--text2);transition:transform .2s;flex-shrink:0}
+.fmt-row.open .fmt-chev{transform:rotate(180deg)}
+
+/* open row bg per week */
+.wk1 .fmt-row.open>.fmt-row-header{background:var(--w1-light)}
+.wk2 .fmt-row.open>.fmt-row-header{background:var(--w2-light)}
+.wk3 .fmt-row.open>.fmt-row-header{background:var(--w3-light)}
+.wk4 .fmt-row.open>.fmt-row-header{background:var(--w4-light)}
+
+/* BODY */
+.fmt-body{display:none;padding:22px;border-top:1px solid var(--border);background:var(--white)}
+.fmt-row.open .fmt-body{display:block}
+.fmt-section{margin-bottom:18px}
+.fmt-section:last-child{margin-bottom:0}
+.fmt-sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.fmt-section p{font-size:14px;line-height:1.7;color:#2a2a2a}
+.fmt-steps{list-style:none;display:flex;flex-direction:column;gap:7px}
+.fmt-steps li{display:flex;gap:10px;font-size:14px;line-height:1.6;color:#2a2a2a}
+.step-num{font-weight:700;min-width:18px;flex-shrink:0}
+.ex-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ex-btn{padding:5px 14px;border-radius:8px;border:1.5px solid;font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;background:transparent;transition:opacity .15s}
+.ex-btn:hover{opacity:.7}
+.ex-placeholder{padding:5px 14px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;color:var(--text2);background:var(--surface2)}
+
+/* week accent colors for body labels, steps, ex-btns */
+.wk1 .fmt-sec-label{color:var(--w1)}.wk1 .step-num{color:var(--w1)}
+.wk1 .ex-btn{border-color:var(--w1-border);color:var(--w1);background:var(--w1-light)}
+.wk2 .fmt-sec-label{color:var(--w2)}.wk2 .step-num{color:var(--w2)}
+.wk2 .ex-btn{border-color:var(--w2-border);color:var(--w2);background:var(--w2-light)}
+.wk3 .fmt-sec-label{color:var(--w3)}.wk3 .step-num{color:var(--w3)}
+.wk3 .ex-btn{border-color:var(--w3-border);color:var(--w3);background:var(--w3-light)}
+.wk4 .fmt-sec-label{color:var(--w4)}.wk4 .step-num{color:var(--w4)}
+.wk4 .ex-btn{border-color:var(--w4-border);color:var(--w4);background:var(--w4-light)}
+
+/* BIBLIOTECA */
+.lib-search{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-bottom:14px;transition:border-color .2s;color:var(--text);background:var(--white)}
+.lib-search:focus{border-color:var(--accent)}
+.lib-search::placeholder{color:#AAAAAA}
+.lib-filters{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.lib-filter{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all .15s;color:var(--text)}
+.lib-filter.active-all{background:var(--accent);color:white;border-color:var(--accent)}
+.lib-filter.active-nutrir{background:var(--nutrir);color:white;border-color:var(--nutrir)}
+.lib-filter.active-ventas{background:var(--ventas);color:white;border-color:var(--ventas)}
+.lib-cat-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin:1.25rem 0 8px 2px}
+
+/* Lib cards */
+.lib-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;overflow:hidden}
+.lib-card .fmt-row-header{padding:14px 16px}
+.lib-card.open>.fmt-row-header{background:var(--white)}
+.lib-card.lc-ventas.open{border-color:var(--ventas-border)}
+.lib-card.lc-nutrir.open{border-color:var(--nutrir-border)}
+.lib-card.lc-ventas.open>.fmt-row-header{background:var(--ventas-bg);color:var(--text)}
+.lib-card.lc-nutrir.open>.fmt-row-header{background:var(--nutrir-bg);color:var(--text)}
+.lib-card.lc-ventas.open .fmt-name{color:var(--text)}
+.lib-card.lc-nutrir.open .fmt-name{color:var(--text)}
+.lib-card .fmt-body{display:none!important}
+.lib-card.open .fmt-body{display:block!important}
+/* lib body labels */
+.lib-card.lc-ventas .fmt-sec-label{color:var(--ventas)}
+.lib-card.lc-ventas .step-num{color:var(--ventas)}
+.lib-card.lc-ventas .ex-btn{border-color:var(--ventas-border);color:var(--ventas);background:var(--ventas-light)}
+.lib-card.lc-nutrir .fmt-sec-label{color:var(--nutrir)}
+.lib-card.lc-nutrir .step-num{color:var(--nutrir)}
+.lib-card.lc-nutrir .ex-btn{border-color:var(--nutrir-border);color:var(--nutrir);background:var(--nutrir-light)}
+
+.app-footer{text-align:center;padding:2rem;font-size:12px;color:var(--text2);font-style:italic}
+
+@media(max-width:600px){
+  .main{padding:1rem}.topbar{padding:0 1rem}.tabs{padding:0 1rem}
+  .tab-btn{padding:12px 12px;font-size:13px}.dist-row{flex-direction:column}
+  .cal-toprow{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-emoji">📱❤️‍🔥</div>
+    <div class="login-title">Biblioteca de<span class="login-title-accent">historias</span></div>
+    <p class="login-sub">Introduce tu email para acceder a tu biblioteca de historias y genera tu calendario personalizado de los próximos 30 días.</p>
+    <input type="email" id="email-input" placeholder="tu@email.com">
+    <button class="btn-login" onclick="handleLogin()">Entrar</button>
+    <div id="login-error">Email no autorizado. Contacta con soporte.</div>
+  </div>
+  <p class="login-footer">App exclusiva para alumnos del Club del Billete y Nexus</p>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-title">Crea historias que enamoren y vendan ❤️‍🔥</div>
+    <div class="topbar-right">
+      <span id="user-email-display"></span>
+      <button class="btn-logout" onclick="handleLogout()">Cerrar sesión</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('calendario',this)">📅 Mi calendario</button>
+    <button class="tab-btn" onclick="switchTab('biblioteca',this)">📚 Biblioteca</button>
+  </div>
+  <div class="main">
+
+    <!-- CALENDARIO -->
+    <div id="section-calendario" class="section active">
+      <div id="setup-card" class="setup-card">
+        <h2>Genera tu calendario</h2>
+        <p>Elige tu prioridad ahora mismo y cuántas historias vas a publicar a la semana.</p>
+        <div class="config-label">HISTORIAS POR SEMANA</div>
+        <div class="slider-row" style="margin-bottom:1.5rem">
+          <div class="slider-track">
+            <input type="range" id="freq-slider" min="4" max="7" value="5" oninput="updateSlider(this.value)">
+          </div>
+          <div class="slider-val" id="slider-label">5 historias/semana</div>
+        </div>
+        <div class="config-label">DISTRIBUCIÓN DEL MES</div>
+        <div class="dist-row">
+          <div class="dist-box dist-ventas">
+            <div class="dist-label">Ventas</div>
+            <div class="dist-num" id="dist-ventas">8</div>
+            <div class="dist-sub">historias</div>
+          </div>
+          <div class="dist-box dist-nutrir">
+            <div class="dist-label">Nutrir</div>
+            <div class="dist-num" id="dist-nutrir">12</div>
+            <div class="dist-sub">historias</div>
+          </div>
+        </div>
+        <button class="btn-gen" onclick="generateCalendar()">Generar calendario</button>
+      </div>
+      <div id="calendar-output"></div>
+    </div>
+
+    <!-- BIBLIOTECA -->
+    <div id="section-biblioteca" class="section">
+      <input class="lib-search" id="lib-search" type="text" placeholder="Buscar formato..." oninput="renderLibrary()">
+      <div class="lib-filters">
+        <button class="lib-filter active-all" onclick="setFilter('all',this)">Todos (16)</button>
+        <button class="lib-filter" onclick="setFilter('Nutrir',this)">Nutrir</button>
+        <button class="lib-filter" onclick="setFilter('Ventas',this)">Ventas</button>
+      </div>
+      <div id="lib-output"></div>
+    </div>
+
+  </div>
+  <div class="app-footer">App exclusiva para alumnos del Club del Billete y Nexus</div>
+</div>
+
+<script>
+const GAS_URL='https://script.google.com/macros/s/AKfycby0vZiDJhDWy3674IR8db2TW8XQrWtsaEOo0Bnntc62gK3ZHIAkdcFL5ljzm6EOWvuoig/exec';
+
+const FORMATOS={
+  Ventas:[
+    {nombre:'Pescando leads o clientes',consiste:'Ofreces un recurso concreto (gratuito o de pago) — checklist, plantilla, guion, calendario, prompt — a cambio de que respondan tu historia con una palabra clave. El recurso lo entregas por DM de forma inmediata y personal.',funciona:'Cada respuesta a una historia es la interacción más valiosa que existe en Instagram: el mensaje directo. El algoritmo la registra como señal fuerte de que tu cuenta le importa a esa persona. Además abre una conversación con alguien que ya levantó la mano, y desde ahí puedes continuar de forma completamente natural.',pasos:['Primera historia: un problema concreto que resuelve el recurso o un resultado que da.','Segunda historia: muestras el recurso visualmente — una captura, un scroll, que se vea qué se llevan.','Tercera historia: que se vea clara la palabra clave que tienen que poner y cómo lo van a conseguir.','Bonus points si tienes capturas de testimonios de que a la gente le ha funcionado y puedes meterlo entre medias.']},
+    {nombre:'Te quedas fuera',consiste:'Comunicas que algo — un precio, un bonus, un acceso, una plaza — desaparece o cambia en una fecha y hora concretas. No es una advertencia vaga, es un dato específico con día, hora y consecuencia real de no actuar.',funciona:'El cerebro reacciona mucho más rápido ante perder algo que ante ganar algo. Una fecha concreta hace la urgencia creíble. La clave está en que la consecuencia sea real y la cumplas siempre. Si anuncias que el precio sube el domingo y el lunes sigue igual, pierdes toda la credibilidad para siempre.',pasos:['Sé específico — cuánto cambia, cuándo exactamente y por qué.','Muestra el contraste visual entre lo que hay ahora y lo que habrá después.','Actualiza en historias a lo largo del día para mantener la tensión y si va entrando gente con capturas, compártelas para aumentar el FOMO.','Y cuando llegue la hora, cumple. Siempre. Puede ser una historia sola o una secuencia.']},
+    {nombre:'Consigue esto tú también',consiste:'Muestras el resultado real de un alumno o cliente — una captura de conversación, un número concreto, un testimonio en texto o audio — y conectas ese resultado con lo que tú ofreces para que quien te está viendo entienda que puede conseguir lo mismo.',funciona:'La prueba social en historias es más creíble que en el feed porque se siente espontáneo, no producido. El cerebro actúa más rápido cuando se identifica con alguien real que ya consiguió lo que quiere. Mostrar esa evidencia hace que vean que otros lo están consiguiendo y que ellos también pueden.',pasos:['Primero el resultado — que se vea, que sea concreto, con nombre o contexto real.','Luego el puente: qué usó esa persona o qué hizo diferente.','Luego la oferta o el siguiente paso.','Si no tienes permiso para compartir el caso concreto, tapa el nombre para mantener su privacidad.','La captura del testimonio es el activo visual más importante de esta secuencia.']},
+    {nombre:'Salseo disfrazado',consiste:'Grabas algo impactante que te ha pasado o lo cuentas a cámara, dando juego al espectador a que adivine qué ha pasado, o simplemente abres con mucha intriga o curiosidad. Luego revelas lo que ha pasado y ligas esta experiencia con un aprendizaje para meter un CTA después.',funciona:'A la gente le encanta el chisme, por lo que te va a servir de gancho brutal para captar la atención. Además se sienten más cercanos, como si se lo estuvieses contando a una amiga. La curiosidad les hace estar pendientes y llegan al recurso que quieres más fácilmente.',pasos:['Piensa qué podrías contar que llame la atención — puede ser una historia de traición, algo inesperado, lo que quieras.','Lo importante es abrir con algo que genere atención inmediata.','Una vez que tienes la atención, puedes meter una encuesta para que traten de adivinar qué ha pasado.','Luego lo desvelas y lo ligas con un aprendizaje que lleve a producto o lead magnet.']},
+    {nombre:'Update de novedades',consiste:'Anuncias algo innovador que has terminado, lo enseñas y haces que la gente quiera tenerlo, para después poder redirigir a dónde lo tienes alojado (lead magnet o formación pagada).',funciona:'A la gente le encantan las novedades, y si lo que has creado les va a facilitar llegar a donde quieren estar, van a quererlo.',pasos:['Empieza anunciando que estás súper emocionado de enseñarles algo nuevo en lo que has estado trabajando.','Habla de la razón por la que se ha creado (si puede ser con vulnerabilidad, mejor).','Añade validación social de lo bueno que es.','Termina con CTA para que accedan.']},
+    {nombre:'Antes vs Ahora',consiste:'Enseñas un claro antes y un después de una situación que capte su atención para poder redirigirles a un recurso o producto con el que pueden conseguir lo mismo.',funciona:'Estás mostrando exactamente el proceso de transformación que les gustaría tener a ellos, por lo que te posicionas como autoridad y persona que puede ayudarles a lograr lo mismo.',pasos:['Tiene que mostrar un caso real con el que se puedan sentir identificados.','En la primera historia se tiene que ver claramente el antes y el después.','En las siguientes historias explicas de manera breve y al grano cómo lo has conseguido.','Después vuelves a poner más demostración del Ahora para cerrar con un CTA que redirija a que comenten X si también quieren lograrlo.']},
+    {nombre:'Desmontar objeción',consiste:'Hablas de una falsa creencia que tienen las personas de tu nicho o les rompes una objeción común que pueden tener y les demuestras con evidencia que no es real.',funciona:'Las personas creen lo que ven, y a veces es complicado cambiar creencias que están arraigadas. Con evidencia puedes cambiarlo y eso te coloca en un lugar de autoridad muy potente.',pasos:['Abrimos con la falsa creencia o la objeción que tienen.','Podemos hacerles participar en una encuesta para que voten al respecto.','Nuestra misión es hacerles ver que están equivocados con evidencia.','Una vez rota esta creencia lo ideal es llevarles a un recurso que les permita dar el primer paso en la dirección que quieren.']},
+    {nombre:'Romper el ciclo',consiste:'Hablas de un ciclo vicioso en el que está la persona a la que te diriges. Haces sentir como que la entiendes, que te sientes identificado con ella y hablas del momento en el que rompiste ese ciclo y cómo lo hiciste. Presentas el nuevo camino para que vea que también puede romperlo y conseguir lo que quiere.',funciona:'Muchas veces las personas no son conscientes de que están en estos ciclos viciosos, pero sí saben que se encuentran mal. Tú les vas a enseñar que entiendes por lo que están pasando y que hay luz al final del túnel, porque tú ya has llegado donde quieren estar.',pasos:['Empezamos hablando de un patrón en el que está el avatar y no se da cuenta de que repite sin darse cuenta.','Haz que se sientan identificados: sabes por lo que están pasando porque tú también estuviste ahí.','Introduce la ruptura de ese patrón, el momento en el que todo cambió.','Cierra con el CTA de que si quieren romper ese ciclo comenten X para llevarles al recurso o producto.']},
+    {nombre:'Desmentir el mito',consiste:'El objetivo es desmentir un mito popular dentro de tu nicho. Tiene que ser una frase típica que muchas personas crean, desmontamos por qué es falso, lo probamos y hablamos de la alternativa que sí funciona.',funciona:'Cuando somos capaces de cambiar las creencias que tienen las personas automáticamente nos colocamos en un lugar de autoridad, generamos confianza y nos acercamos cada vez más a la venta. Si les cobra sentido mentalmente, es que lo hemos hecho bien.',pasos:['Empieza con la frase que sea el mito — que pueda captar su atención.','Explica por qué es falso de manera directa.','Proporciona prueba para que no sea solo "yo creo esto y tú lo otro".','Habla de lo que sí funciona, tu método, tu manera de hacer las cosas.','CTA a tu recurso o producto que les enseñe esta nueva manera.']}
+  ],
+  Nutrir:[
+    {nombre:'Te enseño cómo',consiste:'Enseñas un proceso concreto de tu metodología en una secuencia de 3-5 historias consecutivas. Cada historia es un paso. En conjunto forman una mini clase, pero cada pantalla puede entenderse sola.',funciona:'Las secuencias son lo que más premia el algoritmo — cuando alguien ve varias historias tuyas seguidas sin salir, Instagram interpreta que tu cuenta le importa y te sube de posición. La retención se estabiliza después de la segunda historia: si aguantan la primera, suelen quedarse.',pasos:['Elige un proceso muy concreto, no un tema general. "Cómo estructuro mis historias en 20 minutos" es concreto. "Cómo crear contenido" no lo es.','Una idea por pantalla sin excepciones.','Cambia el formato visual cada 2 historias — alterna entre video enseñando algo, video hablando, foto de fondo con texto y captura de pantalla para darle dinamismo.']},
+    {nombre:'Detrás de escenas',consiste:'Muestras cómo trabajas realmente — tu proceso, tu espacio, una tarea concreta, una decisión de negocio, una sesión con cliente sin datos sensibles. No el resultado — el camino para llegar a él.',funciona:'Ver cómo trabajas es más convincente que escuchar que eres buena en lo que haces. Genera autoridad sin proclamarla y crea aspiración en quienes quieren llegar a donde estás. La clave es documentar, no producir.',pasos:['Graba el proceso, no el resultado.','Puede ser una grabación de pantalla con voz en off, un video POV desde tu escritorio, una cámara grabando mientras trabajas o un time-lapse.','No hace falta que sea espectacular, solo que sea real.','Si al final surge de forma natural un recurso o CTA, inclúyelo. Si no, no lo fuerces.']},
+    {nombre:'Aprende de mis errores',consiste:'Compartes un error real que viviste en el proceso que están ellos con la consecuencia concreta que tuvo y la lección práctica que sacaste. No es quejarse ni dramatizar. Es crecer en público y convertir tu experiencia en valor para quien te sigue.',funciona:'La vulnerabilidad estratégica rompe la barrera entre "persona que admiro" y "persona en la que confío." Genera conversación, comentarios y conexión emocional profunda. Y posiciona tu autoridad de forma paradójica — tú ya has probado, has cometido errores y estás por delante de ellos en el camino.',pasos:['El error tiene que ser real y tener un aprendizaje concreto y accionable.','La estructura es simple: error → consecuencia → qué cambié → qué puedes aplicar tú.','No termines en la queja ni en la reflexión filosófica — termina en algo útil.','El video selfie hablando directo a cámara es el formato más efectivo, pero si lo alargas intercala fotos y videos para no perder retención.']},
+    {nombre:'Te quiero conocer',consiste:'Usas encuestas, preguntas o sliders para conocer mejor a tu audiencia — sus dolores, sus deseos, qué han probado que no les ha funcionado, en qué punto están. Puede parecer entretenimiento, pero es investigación de mercado disfrazada de conversación.',funciona:'Cada respuesta es información real sobre lo que necesita tu audiencia. Con el tiempo eso te permite afinar tu comunicación, hablar exactamente del dolor correcto en el momento correcto y crear ofertas que resuelven lo que realmente les pasa.',pasos:['Abre la secuencia dejando claras tus intenciones: quieres conocerles más para crear mejor contenido para ellos.','Diseña las preguntas con intención — cada encuesta debería responderte algo concreto sobre tu audiencia.','No añadas nunca elementos de interacción sin sentido o generará el efecto contrario.','Las opciones tienen que ser específicas y reales, no genéricas.','Alterna entre encuestas de dolor, encuestas de deseo, preguntas de qué han intentado y preguntas de en qué punto están.','Guarda las respuestas — son oro para tu contenido y tu copy.']},
+    {nombre:'Lifestyle de tu día',consiste:'Compartes momentos personales de tu día a día — comidas, hobbies, planes, lugares, cosas que te gustan — sin intención de venta ni de enseñanza. Simplemente tú siendo tú fuera del negocio.',funciona:'La gente compra a personas, no a marcas. Cuando tu audiencia conoce tu vida más allá del contenido de valor, se crea un vínculo emocional que ningún tutorial puede generar. Ese vínculo es el que hace que cuando llegue el momento de vender, ya confíen en ti.',pasos:['No sobreplanifiques este formato — funciona mejor sin tanto pensar en estrategia. Comparte algo guay de tu día (o de tu semana).','Documenta momentos naturales del día.','Usa video en movimiento siempre que puedas porque el movimiento real aumenta la retención.','Alterna entre clips cortos, fotos del ambiente y momentos espontáneos.','Sin CTA, sin venta, sin lección. Solo vida real con intención de que te conozcan más.']},
+    {nombre:'Cajita de preguntas',consiste:'Abres una caja de preguntas sobre tu temática y respondes las mejores en video ese mismo día. Cada respuesta es una historia nueva que genera más engagement y más preguntas.',funciona:'Crea contenido de valor basado en las dudas reales de tu audiencia — no en lo que tú crees que necesitan. Posiciona tu autoridad respondiendo en directo y sin guion. Genera interacción sostenida durante horas porque cada respuesta reactiva la atención de quien preguntó.',pasos:['Fundamental siempre una historia previa con contexto de por qué es importante que respondan lo que viene después.','Ábrela solo cuando tengas tiempo real para responder ese mismo día.','Elige las preguntas más representativas — las que más gente tiene pero nadie se atreve a hacer.','Responde en video corto mostrando primero la pregunta en pantalla y luego tú respondiendo.','También puedes alternar con algunas que sean foto y respondas con texto en pantalla para hacerlo más dinámico.']},
+    {nombre:'Facetime entre amigos',consiste:'Grabas una historia como si le estuvieras contando algo a un amigo por FaceTime — espontáneo, sin guion, sin producción. Puede ser algo que te acaba de pasar, algo que estás pensando, algo que te ha sorprendido o simplemente cómo estás hoy.',funciona:'La cercanía genera confianza y la confianza con el tiempo lleva a la venta. Cuando tu audiencia siente que te conoce de verdad — no la versión producida sino la real — baja toda la guardia. Este formato es el que más humaniza tu marca porque no puede fingirse: o es espontáneo o no funciona.',pasos:['No lo prepares. Coge el móvil cuando tengas algo que contar y grábalo.','Tono informal, como si le hablaras a alguien de confianza.','Sin intro, sin outro, sin estructura. Puede ser una historia suelta o varias.','Recuerda añadir siempre texto gancho en pantalla que llame la atención o resuma lo que digas.','Si te sale un CTA al final de forma natural, perfecto. Si no, no pasa nada.']}
+  ]
+};
+
+const WK=['wk1','wk2','wk3','wk4'];
+const WK_NAMES=['Semana 1','Semana 2','Semana 3','Semana 4'];
+const WK_COLORS=['#6C5CE7','#00A878','#E17055','#0984E3'];
+const DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+let currentUser=null,currentFreq=5,libFilterCurrent='all';
+
+// AUTH
+function handleLogin(){
+  const email=document.getElementById('email-input').value.trim().toLowerCase();
+  if(!email)return;
+  const btn=document.querySelector('.btn-login');
+  btn.textContent='Verificando...';btn.disabled=true;
+  fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data.access||data.authorized){currentUser=email;localStorage.setItem('hist_user',email);showApp(email);}
+      else showLoginError();
+    })
+    .catch(()=>showLoginError())
+    .finally(()=>{btn.textContent='Entrar';btn.disabled=false;});
+}
+function showLoginError(){document.getElementById('login-error').style.display='block';}
+function handleLogout(){
+  localStorage.removeItem('hist_user');localStorage.removeItem('hist_cal');
+  currentUser=null;
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('email-input').value='';
+  document.getElementById('login-error').style.display='none';
+}
+function showApp(email){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  document.getElementById('user-email-display').textContent=email;
+  updateSlider(currentFreq);
+  renderLibrary();
+  restoreCal();
+}
+document.getElementById('email-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+
+// TABS
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('section-'+tab).classList.add('active');
+}
+
+// SLIDER
+function updateSlider(val){
+  currentFreq=parseInt(val);
+  const slider=document.getElementById('freq-slider');
+  slider.value=val;
+  const pct=((val-4)/(7-4))*100;
+  slider.style.background=`linear-gradient(to right,var(--accent) 0%,var(--accent) ${pct}%,var(--border) ${pct}%,var(--border) 100%)`;
+  document.getElementById('slider-label').textContent=val+' historias/semana';
+  const rem=currentFreq-1;
+  const vend=Math.floor(rem/2);
+  const nutr=rem-vend;
+  document.getElementById('dist-ventas').textContent=vend*4;
+  document.getElementById('dist-nutrir').textContent=(nutr+1)*4;
+}
+
+// TOGGLE
+function toggleRow(el){el.closest('.fmt-row,.lib-card').classList.toggle('open');}
+
+// FORMAT BODY HTML
+function bodyHTML(f,catCls){
+  const stepsHTML=f.pasos.map((p,i)=>`<li><span class="step-num">${i+1}.</span><span>${p}</span></li>`).join('');
+  return `
+    <div class="fmt-body">
+      <div class="fmt-section">
+        <div class="fmt-sec-label">En qué consiste</div>
+        <p>${f.consiste}</p>
+      </div>
+      <div class="fmt-section">
+        <div class="fmt-sec-label">Por qué funciona</div>
+        <p>${f.funciona}</p>
+      </div>
+      <div class="fmt-section">
+        <div class="fmt-sec-label">Cómo hacerlo tú</div>
+        <ul class="fmt-steps">${stepsHTML}</ul>
+      </div>
+      <div class="fmt-section">
+        <div class="fmt-sec-label">Ejemplos</div>
+        <div class="ex-row">
+          <span class="ex-placeholder">Próximamente</span>
+          <span class="ex-placeholder">Próximamente</span>
+          <span class="ex-placeholder">Próximamente</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// CALENDAR
+function shuffle(a){return[...a].sort(()=>Math.random()-.5);}
+function buildWeek(freq){
+  const ft=FORMATOS.Nutrir.find(f=>f.nombre==='Facetime entre amigos');
+  const nutr=FORMATOS.Nutrir.filter(f=>f.nombre!=='Facetime entre amigos');
+  const vend=FORMATOS.Ventas;
+  const rem=freq-1;const vc=Math.floor(rem/2);const nc=rem-vc;
+  const slots=[{f:ft,cat:'Nutrir'}];
+  shuffle(vend).slice(0,vc).forEach(f=>slots.push({f,cat:'Ventas'}));
+  shuffle(nutr).slice(0,nc).forEach(f=>slots.push({f,cat:'Nutrir'}));
+
+  // Shuffle and ensure no two consecutive Ventas
+  let final=shuffle(slots);
+  let attempts=0;
+  while(attempts<100){
+    let hasConsecutive=false;
+    for(let i=0;i<final.length-1;i++){
+      if(final[i].cat==='Ventas'&&final[i+1].cat==='Ventas'){hasConsecutive=true;break;}
+    }
+    if(!hasConsecutive)break;
+    final=shuffle(slots);
+    attempts++;
+  }
+
+  const days=shuffle([0,1,2,3,4,5,6]).slice(0,freq).sort((a,b)=>a-b);
+  return days.map((d,i)=>({day:DAYS[d],f:final[i].f,cat:final[i].cat}));
+}
+
+function renderCalendar(weeks,freq){
+  const out=document.getElementById('calendar-output');
+  out.innerHTML='';
+
+  const hdr=document.createElement('div');
+  hdr.className='cal-toprow';
+  hdr.innerHTML=`
+    <div class="cal-toprow-left"><h3>Mis historias del mes</h3><p>${freq} historias/semana · ${freq*4} historias este mes</p></div>
+    <div class="cal-toprow-right">
+      <button class="btn-pdf" onclick="downloadPDF()">↓ Descargar PDF</button>
+      <button class="btn-nuevo" onclick="showSetup()">↺ Nuevo calendario</button>
+    </div>`;
+  out.appendChild(hdr);
+
+  const leg=document.createElement('div');
+  leg.className='legend';
+  leg.innerHTML=`<div class="leg-item"><div class="leg-dot" style="background:var(--nutrir)"></div>Nutrir</div><div class="leg-item"><div class="leg-dot" style="background:var(--ventas)"></div>Ventas</div>`;
+  out.appendChild(leg);
+
+  weeks.forEach((wd,w)=>{
+    const blk=document.createElement('div');
+    blk.className=`week-block ${WK[w]}`;
+    blk.innerHTML=`<div class="week-head">${WK_NAMES[w]}</div>`;
+    wd.forEach(item=>{
+      const catCls=item.cat.toLowerCase();
+      const row=document.createElement('div');
+      row.className='fmt-row';
+      row.innerHTML=`
+        <div class="fmt-row-header" onclick="toggleRow(this)">
+          <div class="fmt-row-left">
+            <span class="fmt-day">${item.day.substring(0,3)}</span>
+            <span class="fmt-name">${item.f.nombre}</span>
+          </div>
+          <span class="fmt-tag tag-${catCls}">${item.cat}</span>
+          <span class="fmt-chev">▾</span>
+        </div>
+        ${bodyHTML(item.f,catCls)}`;
+      blk.appendChild(row);
+    });
+    out.appendChild(blk);
+  });
+}
+
+function generateCalendar(){
+  const weeks=[];
+  for(let w=0;w<4;w++) weeks.push(buildWeek(currentFreq));
+  renderCalendar(weeks,currentFreq);
+  document.getElementById('setup-card').style.display='none';
+  localStorage.setItem('hist_cal',JSON.stringify({freq:currentFreq,weeks}));
+}
+
+function showSetup(){
+  document.getElementById('setup-card').style.display='block';
+  document.getElementById('calendar-output').innerHTML='';
+  localStorage.removeItem('hist_cal');
+}
+
+function restoreCal(){
+  const s=localStorage.getItem('hist_cal');
+  if(!s)return;
+  try{
+    const {freq,weeks}=JSON.parse(s);
+    currentFreq=freq;updateSlider(freq);
+    const allF=[...FORMATOS.Ventas,...FORMATOS.Nutrir];
+    const rebuilt=weeks.map(wd=>wd.map(item=>({
+      day:item.day,cat:item.cat,
+      f:allF.find(f=>f.nombre===item.f.nombre)||item.f
+    })));
+    renderCalendar(rebuilt,freq);
+    document.getElementById('setup-card').style.display='none';
+  }catch(e){localStorage.removeItem('hist_cal');}
+}
+
+// PDF
+function downloadPDF(){
+  const s=localStorage.getItem('hist_cal');
+  if(!s){alert('Genera primero tu calendario.');return;}
+  const {freq,weeks}=JSON.parse(s);
+
+  // Load jsPDF dynamically
+  if(window.jspdf&&window.jspdf.jsPDF){
+    _doPDF(freq,weeks);
+  } else {
+    const script=document.createElement('script');
+    script.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload=()=>_doPDF(freq,weeks);
+    script.onerror=()=>alert('No se pudo cargar la librería de PDF. Comprueba tu conexión.');
+    document.head.appendChild(script);
+  }
+}
+
+function _doPDF(freq,weeks){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,margin=18;
+  let y=margin;
+
+  // Colors
+  const wColors=['#6C5CE7','#00A878','#E17055','#0984E3'];
+  const wColorsRGB=[[108,92,231],[0,168,120],[225,112,85],[9,132,227]];
+
+  // Helper: hex to rgb
+  function hexRGB(hex){
+    const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return[r,g,b];
+  }
+
+  // Title
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.setTextColor(17,17,24);
+  doc.text('Mis historias del mes',margin,y);
+  y+=7;
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(11);
+  doc.setTextColor(114,114,138);
+  doc.text(`${freq} historias/semana · ${freq*4} historias este mes`,margin,y);
+  y+=10;
+
+  weeks.forEach((wd,w)=>{
+    // Week header
+    const[r,g,b]=wColorsRGB[w];
+    doc.setFillColor(r,g,b);
+    doc.roundedRect(margin,y,W-margin*2,8,2,2,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255,255,255);
+    doc.text(WK_NAMES[w].toUpperCase(),margin+4,y+5.2);
+    y+=11;
+
+    wd.forEach(item=>{
+      if(y>270){doc.addPage();y=margin;}
+      const isV=item.cat==='Ventas';
+
+      // Row bg
+      doc.setFillColor(isV?253:240,isV?240:253,isV?232:246);
+      doc.rect(margin,y,W-margin*2,9,'F');
+
+      // Left border accent
+      const[ac,ag,ab]=isV?[212,101,42]:[26,138,82];
+      doc.setFillColor(ac,ag,ab);
+      doc.rect(margin,y,2,9,'F');
+
+      // Day
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9);
+      doc.setTextColor(114,114,138);
+      doc.text(item.day.substring(0,3),margin+5,y+5.8);
+
+      // Name
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(10);
+      doc.setTextColor(17,17,24);
+      doc.text(item.f.nombre,margin+22,y+5.8);
+
+      // Tag pill
+      const tagW=22;const tagX=W-margin-tagW-2;
+      doc.setFillColor(isV?253:226,isV?220:245,isV?232:236);
+      doc.roundedRect(tagX,y+1.5,tagW,6,2,2,'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(ac,ag,ab);
+      doc.text(item.cat,tagX+tagW/2,y+5.6,{align:'center'});
+
+      // Separator
+      doc.setDrawColor(232,232,236);
+      doc.setLineWidth(0.3);
+      doc.line(margin,y+9,W-margin,y+9);
+      y+=9;
+    });
+    y+=5;
+  });
+
+  // Footer
+  if(y>275){doc.addPage();y=18;}
+  doc.setFont('helvetica','italic');
+  doc.setFontSize(9);
+  doc.setTextColor(170,170,170);
+  doc.text('App exclusiva para alumnos del Club del Billete y Nexus',W/2,y+8,{align:'center'});
+
+  doc.save('mis-historias-del-mes.pdf');
+}
+
+// BIBLIOTECA
+function setFilter(f,btn){
+  libFilterCurrent=f;
+  document.querySelectorAll('.lib-filter').forEach(b=>b.classList.remove('active-all','active-nutrir','active-ventas'));
+  if(f==='all')btn.classList.add('active-all');
+  else if(f==='Nutrir')btn.classList.add('active-nutrir');
+  else btn.classList.add('active-ventas');
+  renderLibrary();
+}
+
+function renderLibrary(){
+  const q=(document.getElementById('lib-search')?.value||'').toLowerCase().trim();
+  const out=document.getElementById('lib-output');
+  out.innerHTML='';
+  const cats=libFilterCurrent==='all'?['Ventas','Nutrir']:[libFilterCurrent];
+  cats.forEach(cat=>{
+    const fmts=FORMATOS[cat].filter(f=>!q||f.nombre.toLowerCase().includes(q)||f.consiste.toLowerCase().includes(q)||f.funciona.toLowerCase().includes(q));
+    if(!fmts.length)return;
+    const t=document.createElement('div');
+    t.className='lib-cat-title';t.textContent=cat;
+    out.appendChild(t);
+    fmts.forEach(f=>{
+      const catCls=cat.toLowerCase();
+      const card=document.createElement('div');
+      card.className=`lib-card lc-${catCls}`;
+      card.innerHTML=`
+        <div class="fmt-row-header" onclick="toggleRow(this)">
+          <div class="fmt-row-left">
+            <span class="fmt-name">${f.nombre}</span>
+          </div>
+          <span class="fmt-tag tag-${catCls}">${cat}</span>
+          <span class="fmt-chev">▾</span>
+        </div>
+        ${bodyHTML(f,catCls)}`;
+      out.appendChild(card);
+    });
+  });
+}
+
+// INIT
+updateSlider(5);
+const su=localStorage.getItem('hist_user');
+if(su){currentUser=su;showApp(su);}
+</script>
+</body>
+</html>
