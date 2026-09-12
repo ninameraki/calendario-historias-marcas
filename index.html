@@ -355,9 +355,51 @@ function updateSlider(val){
 // TOGGLE
 function toggleRow(el){el.closest('.fmt-row,.lib-card').classList.toggle('open');}
 
+// IMAGE MAP — GitHub raw URLs
+const BASE='https://raw.githubusercontent.com/ninameraki/calendario-historias-marcas/main/images/';
+const IMGS={
+  'Pescando leads o clientes':['pescando-leads-o-clientes-1.png','pescando-leads-o-clientes-2.png','pescando-leads-o-clientes-3.png'],
+  'Te quedas fuera':['te-quedas-fuera-1.png','te-quedas-fuera-2.png','te-quedas-fuera-3.png'],
+  'Consigue esto tú también':['consigue-esto-tu-tambie-1.png','consigue-esto-tu-tambie-2.png','consigue-esto-tu-tambie-3.png'],
+  'Salseo disfrazado':['salseo-disfrazado-1.png','salseo-disfrazado-2.png','salseo-disfrazado-3.png','salseo-disfrazado-4.png','salseo-disfrazado-5.png'],
+  'Update de novedades':['update-de-novedades-1.png','update-de-novedades-2.png'],
+  'Antes vs Ahora':['antes-vs-ahora-1.png','antes-vs-ahora-2.png','antes-vs-ahora-3.png','antes-vs-ahora-4.png','antes-vs-ahora-5.png'],
+  'Desmontar objeción':['desmontar-al-mito-1.png','desmontar-al-mito-2.png'],
+  'Romper el ciclo':['romper-el-ciclo-1.png','romper-el-ciclo-2.png'],
+  'Desmentir el mito':['desmentir-el-mito-1.png','desmentir-el-mito-2.png'],
+  'Te enseño cómo':['te-enseno-como-1.png','te-enseno-como-2.png'],
+  'Detrás de escenas':['detras-de-escenas-1.png','detras-de-escenas-2.png','detras-de-escenas-3.png'],
+  'Aprende de mis errores':['aprende-de-mis-errores-1.png','aprende-de-mis-errores-2.png'],
+  'Te quiero conocer':['te-quiero-conocer-1.png','te-quiero-conocer-2.png','te-quiero-conocer-3.png'],
+  'Lifestyle de tu día':['lifestyle-de-tu-dia-1.png','lifestyle-de-tu-dia-2.png','lifestyle-de-tu-dia-3.png'],
+  'Cajita de preguntas':['cajita-de-preguntas-1.png','cajita-de-preguntas-2.png'],
+  'Facetime entre amigos':['facetime-entre-amigos-1.png','facetime-entre-amigos-2.png','facetime-entre-amigos-3.png','facetime-entre-amigos-4.png']
+};
+
+// LIGHTBOX
+function openLightbox(src){
+  let lb=document.getElementById('lightbox');
+  if(!lb){
+    lb=document.createElement('div');
+    lb.id='lightbox';
+    lb.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:16px';
+    lb.onclick=()=>lb.remove();
+    const img=document.createElement('img');
+    img.style.cssText='max-width:100%;max-height:90vh;border-radius:8px;object-fit:contain';
+    lb.appendChild(img);
+    document.body.appendChild(lb);
+  }
+  lb.querySelector('img').src=src;
+  lb.style.display='flex';
+}
+
 // FORMAT BODY HTML
 function bodyHTML(f,catCls){
   const stepsHTML=f.pasos.map((p,i)=>`<li><span class="step-num">${i+1}.</span><span>${p}</span></li>`).join('');
+  const imgs=IMGS[f.nombre]||[];
+  const exHTML=imgs.length
+    ?imgs.map(img=>`<img src="${BASE}${img}" alt="Ejemplo" onclick="openLightbox('${BASE}${img}')" style="width:88px;height:155px;object-fit:cover;border-radius:8px;cursor:zoom-in;border:1px solid var(--border)" loading="lazy">`).join('')
+    :`<span class="ex-placeholder">Próximamente</span>`;
   return `
     <div class="fmt-body">
       <div class="fmt-section">
@@ -374,10 +416,7 @@ function bodyHTML(f,catCls){
       </div>
       <div class="fmt-section">
         <div class="fmt-sec-label">Ejemplos</div>
-        <div class="ex-row">
-          <span class="ex-placeholder">Próximamente</span>
-          <span class="ex-placeholder">Próximamente</span>
-          <span class="ex-placeholder">Próximamente</span>
+        <div class="ex-row">${exHTML}
         </div>
       </div>
     </div>`;
